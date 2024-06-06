@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Customize the scroll bar using Tailwind CSS */
+
+/* Hide the default scrollbar */
+html {
+  /* scrollbar-width: none; */
+  /* -ms-overflow-style: none; */
+}
+
+/* Style the custom scrollbar */
+body::-webkit-scrollbar {
+    @apply bg-zinc-800
+
+}
+
+body::-webkit-scrollbar-thumb {
+ @apply 
+ bg-zinc-800
+  rounded-full 
+  /* @apply   */
+}
+
+body::-webkit-scrollbar-track {
+    @apply
+    bg-zinc-600
+    rounded-full
+}
