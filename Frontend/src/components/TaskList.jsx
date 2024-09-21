@@ -9,7 +9,7 @@ const TaskList = () => {
 
   // fetching the task list
   useEffect(() => {
-    fetch("http://localhost:8000/task")
+    fetch("https://todo-list-59kv.vercel.app/task")
       .then((res) => res.json())
       .then((data) => setTask(data))
       .catch((err) => console.log("Error while fetching tasks", err));
@@ -23,7 +23,7 @@ const TaskList = () => {
   //delete task
   const handedDeleteTask = async (taskId) => {
     console.log("Deleting task with ID:", taskId);
-    await fetch(`http://localhost:8000/task/${taskId}`, {
+    await fetch(`https://todo-list-59kv.vercel.app/task/${taskId}`, {
       method: "DELETE",
     });
     setTask(task.filter((task) => task.id !== taskId));
@@ -33,13 +33,16 @@ const TaskList = () => {
   const handedUpdateTask = async (taskId , updatedTask) => {
     const { title, discreption , date} = updatedTask;
     const newtask = { title, discreption , date };
-    const response = await fetch(`http://localhost:8000/task/${taskId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newtask),
-    });
+    const response = await fetch(
+      `https://todo-list-59kv.vercel.app/task/${taskId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newtask),
+      }
+    );
     const data = await response.json();
     console.log(data);
   };

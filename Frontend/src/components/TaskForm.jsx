@@ -9,7 +9,7 @@ const TaskForm = ({ onAdd }) => {
     e.preventDefault();
     const newtask = { title, discreption ,date};
 
-    const response = await fetch("http://localhost:8000/task", {
+    const response = await fetch("https://todo-list-59kv.vercel.app/task", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
