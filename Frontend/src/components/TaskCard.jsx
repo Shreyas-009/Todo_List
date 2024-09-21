@@ -118,9 +118,6 @@ const TaskCard = ({ task, onDelete, onUpdate }) => {
                 <span className="text-zinc-300 ">
                   <span className="font-semibold">Date</span> : {formattedDate}
                 </span>
-                <span className="text-zinc-300 ">
-                  <span className="font-semibold">Time</span> : {formattedTime}
-                </span>
               </p>
             </div>
           </div>
