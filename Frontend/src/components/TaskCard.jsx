@@ -1,131 +1,131 @@
 import React, { useState } from "react";
 
 const TaskCard = ({ task, onDelete, onUpdate }) => {
-  const { id, title, discreption, date } = task;
+  const [editing, setEditing] = useState(false);
   const [updatedTask, setUpdatedTask] = useState({
-    title: title,
-    discreption: discreption,
-    date: new Date()
-  });
-  const [editing, setEditing] = React.useState(false);
-
-  //handel delete task
-  const handelDeleteTask = (taskid) => {
-    onDelete(taskid);
-  };
-
-  // Format the date to show only the year, month, and date
-  const formattedDate = new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
+    title: task.title,
+    discreption: task.discreption,
+    date: task.date,
   });
 
-  // Format the date to show time only
-  const formattedTime = new Date(date).toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  // Format the date
+  const formattedDate = new Date(task.date).toLocaleDateString();
+  const formattedTime = new Date(task.date).toLocaleTimeString();
 
-  //handel editing
-  const handelChange = (e) => {
-    const { name, value } = e.target;
-    setUpdatedTask({
-      ...updatedTask,
-      [name]: value,
-    });
-    console.log(e);
+  const handelSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch("https://todo-list-59kv.vercel.app/task", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedTask),
+      });
+
+      if (response.ok) {
+        onUpdate(task._id, updatedTask);
+        setEditing(false);
+      }
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
   };
 
-// handeling submit
-  const handelSubmit = (e) => {
-    onUpdate(task._id , updatedTask)
-    setEditing(!editing);
-  };
+  const handelDeleteTask = async (id) => {
+    try {
+      const response = await fetch(
+        `https://todo-list-59kv.vercel.app/task/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
-// handeling cancle edit
-  const handelCancel = () => {
-    setEditing(!editing);
-    setUpdatedTask({
-      title: title,
-      discreption: discreption,
-    });
+      if (response.ok) {
+        onDelete(id);
+      }
+    } catch (error) {
+      console.error("Error deleting task:", error);
+    }
   };
 
   return (
-    <>
+    <div className="w-full max-w-4xl mx-auto transition-all duration-200 hover:shadow-lg">
       {editing ? (
-        <>
-          <form
-            onSubmit={handelSubmit}
-            className="card flex flex-col gap-3 md:gap-7 py-3 px-3 md:px-6 md:w-full lg:w-3/5  xl:w-2/5 bg-zinc-700 text-white rounded-lg "
-          >
-            <input
-              className="text-xl md:text-3xl font-semibold bg-zinc-500 text-white outline-none rounded-lg px-5 py-3"
-              name="title"
-              value={updatedTask.title}
-              onChange={handelChange}
-            />
-            <input
-              className="text-xl md:text-3xl font-semibold bg-zinc-500 text-white outline-none rounded-lg px-5 py-3"
-              name="discreption"
-              value={updatedTask.discreption}
-              onChange={handelChange}
-            />
-            <div className="flex gap-2 w-full">
+        <form
+          onSubmit={handelSubmit}
+          className="card flex flex-col gap-4 p-6 bg-zinc-800 text-white rounded-xl shadow-md border border-zinc-700"
+        >
+          <input
+            className="text-xl md:text-2xl font-semibold bg-zinc-700 text-white outline-none rounded-lg px-5 py-3 transition-colors duration-200 hover:bg-zinc-600 focus:bg-zinc-600"
+            name="title"
+            value={updatedTask.title}
+            onChange={handelChange}
+            placeholder="Task Title"
+          />
+          <textarea
+            className="text-lg bg-zinc-700 text-white outline-none rounded-lg px-5 py-3 min-h-[100px] transition-colors duration-200 hover:bg-zinc-600 focus:bg-zinc-600"
+            name="discreption"
+            value={updatedTask.discreption}
+            onChange={handelChange}
+            placeholder="Task Description"
+          />
+          <div className="flex flex-wrap gap-3 items-center justify-between">
+            <div className="flex gap-2">
               <button
                 type="submit"
-                className="py-3 px-6  w-fit bg-green-600 rounded-xl  "
+                className="py-2 px-4 bg-green-600 rounded-lg hover:bg-green-700 transition-colors duration-200"
               >
                 Save Task
               </button>
               <button
                 onClick={handelCancel}
-                className=" py-3 px-6  w-fit bg-zinc-600 rounded-xl "
+                className="py-2 px-4 bg-zinc-600 rounded-lg hover:bg-zinc-500 transition-colors duration-200"
               >
-                Cancle
+                Cancel
               </button>
-              <p className="py-3 ml-auto text-zinc-400 flex gap-3 text-sm">
-                <span className="text-zinc-300 ">
-                  <span className="font-semibold">Date</span> : {formattedDate}
-                </span>
-                <span className="text-zinc-300 ">
-                  <span className="font-semibold">Time</span> : {formattedTime}
-                </span>
-              </p>
             </div>
-          </form>
-        </>
+            <p className="text-zinc-400 flex flex-wrap gap-3 text-sm">
+              <span className="text-zinc-300">
+                <span className="font-semibold">Date:</span> {formattedDate}
+              </span>
+              <span className="text-zinc-300">
+                <span className="font-semibold">Time:</span> {formattedTime}
+              </span>
+            </p>
+          </div>
+        </form>
       ) : (
-        <>
-          <div className="card flex flex-col gap-3 md:gap-7 py-3 px-3 md:px-6 md:w-full lg:w-3/5  xl:w-2/5 bg-zinc-700 text-white rounded-lg ">
-            <h1 className="text-2xl md:text-3xl font-semibold">{title}</h1>
-            <p className="text-sm md:text-xl px-2 md:px-5">{discreption}</p>
-            <div className="flex gap-2 w-full">
+        <div className="card flex flex-col gap-4 p-6 bg-zinc-800 text-white rounded-xl shadow-md border border-zinc-700">
+          <h1 className="text-2xl md:text-3xl font-semibold">{task.title}</h1>
+          <p className="text-base md:text-lg text-zinc-300 leading-relaxed">
+            {task.discreption}
+          </p>
+          <div className="flex flex-wrap gap-3 items-center justify-between">
+            <div className="flex gap-2">
               <button
                 onClick={() => setEditing(!editing)}
-                className="py-3 px-6  w-fit bg-blue-600 rounded-xl  "
+                className="py-2 px-4 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors duration-200"
               >
                 Edit Task
               </button>
               <button
                 onClick={() => handelDeleteTask(task._id)}
-                className=" py-3 px-6  w-fit bg-red-600 rounded-xl "
+                className="py-2 px-4 bg-red-600 rounded-lg hover:bg-red-700 transition-colors duration-200"
               >
                 Delete
               </button>
-              <p className="py-3 ml-auto text-zinc-400 flex gap-3 text-sm">
-                <span className="text-zinc-300 ">
-                  <span className="font-semibold">Date</span> : {formattedDate}
-                </span>
-              </p>
             </div>
+            <p className="text-zinc-400 text-sm">
+              <span className="text-zinc-300">
+                <span className="font-semibold">Date:</span> {formattedDate}
+              </span>
+            </p>
           </div>
-        </>
+        </div>
       )}
-    </>
+    </div>
   );
 };
 
 export default TaskCard;
-
