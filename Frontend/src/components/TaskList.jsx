@@ -5,6 +5,33 @@ import TaskCard from "./TaskCard";
 import TaskForm from "./TaskForm";
 
 const TaskList = () => {
+  
+  
+// const dummyTasks = [
+//   {
+//     _id: "1",
+//     title: "Complete Project Proposal",
+//     discreption:
+//       "Write and submit the project proposal for the new client website. Include timeline, budget, and technical specifications.",
+//     date: new Date("2024-03-20T10:30:00"),
+//   },
+//   {
+//     _id: "2",
+//     title: "Team Meeting",
+//     discreption:
+//       "Weekly team sync to discuss project progress, blockers, and upcoming deliverables. Prepare status report for stakeholders.",
+//     date: new Date("2024-03-21T14:00:00"),
+//   },
+//   {
+//     _id: "3",
+//     title: "Code Review",
+//     discreption:
+//       "Review pull requests for the authentication feature. Check for security vulnerabilities and code quality standards.",
+//     date: new Date("2024-03-22T11:00:00"),
+//   },
+// ];
+
+
   const [task, setTask] = useState([]);
 
   // fetching the task list
@@ -50,7 +77,7 @@ const TaskList = () => {
   return (
     <>
       <TaskForm onAdd={handelAddTask} />
-      <ul className="flex flex-col gap-7 w-full  py-6 md:py-12 px-3 md:px-6 rounded-xl mx-auto bg-zinc-800">
+      <ul className="flex flex-col gap-7 w-full  py-6 md:py-12 px-3 md:px-6 rounded-xl mx-auto">
         {task.map((task) => {
           return (
             <>

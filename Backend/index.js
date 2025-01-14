@@ -7,7 +7,7 @@ const mongoose = require('./config/mongoos');
 
 // useing cors to allow fetching data from backend
 app.use(cors({
-  origin: ['https://todo-list-lyart-chi.vercel.app', 'http://localhost:3000'],
+  origin: "*" ,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
