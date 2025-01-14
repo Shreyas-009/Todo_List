@@ -9,6 +9,10 @@ Experience the application live at:
 
 ## ✨ Features
 
+- **User Authentication**
+  - Secure user registration and login
+  - JWT-based authentication
+  - Protected routes for user-specific tasks
 - **Create Tasks**: Add new tasks with titles and descriptions
 - **View Tasks**: See all your tasks in an organized list
 - **Update Tasks**: Edit existing task details and mark tasks as complete
@@ -21,11 +25,19 @@ Experience the application live at:
 - **Frontend**: React.js
 - **Backend**: Node.js & Express.js
 - **Database**: MongoDB
+- **Authentication**: JWT (JSON Web Tokens)
 - **Deployment**: Vercel
 
 ## 🎯 Key Functionalities
 
+- **Authentication System**
+
+  - User registration with email and password
+  - Secure login with JWT tokens
+  - Protected API endpoints
+
 - **Task Management**
+
   - Create, read, update, and delete tasks
   - Mark tasks as complete/incomplete
   - Filter tasks by status
