@@ -3,93 +3,103 @@ import { useState } from "react";
 import { useEffect } from "react";
 import TaskCard from "./TaskCard";
 import TaskForm from "./TaskForm";
+import { API_BASE_URL } from "../config/api";
+import toast from "react-hot-toast";
 
-const TaskList = () => {
-  
-  
-// const dummyTasks = [
-//   {
-//     _id: "1",
-//     title: "Complete Project Proposal",
-//     discreption:
-//       "Write and submit the project proposal for the new client website. Include timeline, budget, and technical specifications.",
-//     date: new Date("2024-03-20T10:30:00"),
-//   },
-//   {
-//     _id: "2",
-//     title: "Team Meeting",
-//     discreption:
-//       "Weekly team sync to discuss project progress, blockers, and upcoming deliverables. Prepare status report for stakeholders.",
-//     date: new Date("2024-03-21T14:00:00"),
-//   },
-//   {
-//     _id: "3",
-//     title: "Code Review",
-//     discreption:
-//       "Review pull requests for the authentication feature. Check for security vulnerabilities and code quality standards.",
-//     date: new Date("2024-03-22T11:00:00"),
-//   },
-// ];
-
+function TaskList({ token }) {
 
   const [task, setTask] = useState([]);
 
   // fetching the task list
   useEffect(() => {
-    fetch("https://todo-list-59kv.vercel.app/task")
-      .then((res) => res.json())
-      .then((data) => setTask(data))
-      .catch((err) => console.log("Error while fetching tasks", err));
-  }, [task]);
+    fetchTasks();
+  }, []);
 
-  // add task
-  const handelAddTask = (newTask) => {
-    setTask([...task, newTask]);
+  const fetchTasks = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/tasks`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      setTask(data);
+    } catch (error) {
+      toast.error("Failed to fetch tasks");
+    }
   };
 
   //delete task
   const handedDeleteTask = async (taskId) => {
     console.log("Deleting task with ID:", taskId);
-    await fetch(`https://todo-list-59kv.vercel.app/task/${taskId}`, {
-      method: "DELETE",
-    });
-    setTask(task.filter((task) => task.id !== taskId));
+    try {
+      const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (response.ok) {
+        setTask(task.filter((task) => task._id !== taskId));
+        toast.success("Task deleted successfully");
+      } else {
+        const data = await response.json();
+        toast.error(data.message || "Failed to delete task");
+      }
+    } catch (error) {
+      toast.error("Error deleting task");
+    }
   };
 
   //update task
-  const handedUpdateTask = async (taskId , updatedTask) => {
-    const { title, discreption , date} = updatedTask;
-    const newtask = { title, discreption , date };
-    const response = await fetch(
-      `https://todo-list-59kv.vercel.app/task/${taskId}`,
-      {
+  const handedUpdateTask = async (taskId, updatedTask) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newtask),
+        body: JSON.stringify(updatedTask),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update task");
       }
-    );
-    const data = await response.json();
-    console.log(data);
+
+      const data = await response.json();
+      setTask((prevTasks) =>
+        prevTasks.map((task) => (task._id === taskId ? data : task))
+      );
+      toast.success("Task updated successfully");
+    } catch (error) {
+      toast.error(error.message || "Error updating task");
+      console.error("Update error:", error);
+    }
   };
 
   return (
     <>
-      <TaskForm onAdd={handelAddTask} />
-      <ul className="flex flex-col gap-7 w-full  py-6 md:py-12 px-3 md:px-6 rounded-xl mx-auto">
+      <TaskForm token={token}
+      task={task} setTask={setTask}
+      />
+      <ul className="flex flex-col gap-7 w-full py-6 md:py-6 px-3 md:px-6 rounded-xl mx-auto">
         {task.map((task) => {
           return (
             <>
-              <TaskCard task={task} key={task.id} onDelete={handedDeleteTask} onUpdate={handedUpdateTask} />
+              <TaskCard
+                task={task}
+                key={task.id}
+                onDelete={handedDeleteTask}
+                onUpdate={handedUpdateTask}
+              />
             </>
           );
         })}
       </ul>
     </>
   );
-};
+}
 
 export default TaskList;
-
-

@@ -6,7 +6,7 @@ const port = process.env.port || 8000;
 const mongoose = require("./config/mongoos");
 
 const allowedOrigins = [
-  "http://localhost:5173", 
+  "http://localhost:5173",
   "https://todo-list-lyart-chi.vercel.app",
 ];
 
@@ -31,8 +31,8 @@ app.options("*", cors());
 //use json format to read data
 app.use(express.json());
 
-//Routers
-app.use(require("./routes/taskRoute"));
+app.use("/api/auth", require("./routes/authRoute"));
+app.use("/api/tasks", require("./routes/taskRoute"));
 
 // starting server
 app.listen(port, () => {
